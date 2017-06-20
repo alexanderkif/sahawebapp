@@ -20,30 +20,41 @@ public class Servlet1 extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html;charset=utf-8");
-
-        int n;
-        String str = req.getParameterMap().toString();
-        if(req.getParameter("n")==null)
-            n=1;
-        else n=Integer.valueOf(req.getParameter("n"));
+        String form = "<p><h2>Multiplication table</h2></p>\n" +
+                "<form>\n" +
+                "<p>Rows:</p>\n" +
+                "<p><input name=\"rows\"</p>\n" +
+                "<p>Cols:</p>\n" +
+                "<p><input name=\"cols\"</p>\n" +
+                "<p><input type=\"submit\" value=\"Submit\"></p>\n" +
+                "</form>";
+        int rows, cols;
+        if(req.getParameter("rows")==null) rows=1;
+        else rows=Integer.valueOf(req.getParameter("rows"));
+        if(req.getParameter("cols")==null) cols=1;
+        else cols=Integer.valueOf(req.getParameter("cols"));
 //        PrintWriter out = resp.getWriter();
         ServletOutputStream out = resp.getOutputStream();
-        out.write(("<h2>From Servlet1</h2><br>Give me \"?n= \" parameter"
-                +"<br>Method: " + req.getMethod()
+        out.write((form
+                +"<p>Method: " + req.getMethod()
                 +"<br>URL: "+ req.getRequestURL().toString()
-                +"<br>pathInfo: "+ req.getPathInfo()
                 +"<br>sessionId: "+ req.getSession().getId()
-                +"<br>parameters: "+ str
-                +"<br><br><table border=1>"
-                + IntStream.range(1, n)
+                +"</p>\n"
+                +"<p>Rows: "+ req.getParameter("rows")
+                +"<br>Cols: "+ req.getParameter("cols")
+                +"</p>\n"
+//                +"<br>parameters: "+ req.getParameterMap().toString()
+                +"<p><table border=1>"
+                + IntStream.range(1, rows+1)
                 .mapToObj(s-> "<tr>"+
-                        IntStream.range(1,10)
-                        .mapToObj(s1->"<td>"+s*s1+"</td>")
-                        .collect(Collectors.joining())
-                        +"</tr>"
+                    IntStream.range(1, cols+1)
+                    .mapToObj(s1->"<td>"+s*s1+"</td>")
+                    .collect(Collectors.joining())
+                    +"</tr>"
                 )
                 .collect(Collectors.joining())
-                +"</table>").getBytes()
+                +"</table>"
+                +"</p>\n").getBytes()
         );
         out.flush();
         out.close();
