@@ -23,14 +23,14 @@ public class Servlet1 extends HttpServlet {
             resp.setContentType("text/html;charset=utf-8");
             String form = "<div align=\"center\"><p><h2>Multiplication table</h2></p>\n" +
                     "<form>\n" +
-                    "<p>Rows:<br><input name=\"rows\" value="+req.getParameter("rows")+"></p>\n" +
-                    "<p>Cols:<br><input name=\"cols\" value="+req.getParameter("cols")+"></p>\n" +
+                    "<p>Rows:<br><input name=\"rows\"></p>\n" +
+                    "<p>Cols:<br><input name=\"cols\"></p>\n" +
                     "<p><input type=\"submit\" value=\"Submit\"></p>\n" +
                     "</form>";
             int rows, cols;
-            if (req.getParameter("rows") == null) rows = 1;
+            if (req.getParameter("rows") == null || req.getParameter("rows") == "") rows = 1;
             else rows = Integer.valueOf(req.getParameter("rows"));
-            if (req.getParameter("cols") == null) cols = 1;
+            if (req.getParameter("cols") == null || req.getParameter("cols") == "") cols = 1;
             else cols = Integer.valueOf(req.getParameter("cols"));
             out.write((form
                     + "<p>Method: " + req.getMethod()
@@ -53,7 +53,7 @@ public class Servlet1 extends HttpServlet {
                     + "</p></div>").getBytes()
             );
         }catch (Exception e){
-            out.write(("Something go wrong...<br>Exception:<br>"+e).getBytes());
+            out.write(("<h2>It's not a number.</h2>Exception:<br>"+e+"<h2><a href=\"/multi\">go back</a></h2>").getBytes());
         }
         out.flush();
         out.close();
