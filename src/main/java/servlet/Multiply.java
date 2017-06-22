@@ -12,15 +12,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(
-        name = "Servlet1",
+        name = "Multiply",
         urlPatterns = {"/multi"}
 )
-public class Servlet1 extends HttpServlet {
+public class Multiply extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletOutputStream out = resp.getOutputStream();
+        resp.setContentType("text/html;charset=utf-8");
         try {
-            resp.setContentType("text/html;charset=utf-8");
             String form = "<div align=\"center\"><p><h2>Multiplication table</h2></p>\n" +
                     "<form>\n" +
                     "<p>Rows:<br><input name=\"rows\"></p>\n" +
@@ -41,19 +41,25 @@ public class Servlet1 extends HttpServlet {
                     + "<br>Cols: " + req.getParameter("cols")
                     + "</p>\n"
                     + "<p><table border=3px bordercolor=\"#888888\" cellspacing=0 cellpadding=3>"
-                    + IntStream.range(1, rows + 1)
+                    + "<tr>"
+                    + IntStream.range(1, cols + 1)
+                        .mapToObj(col -> "<td align=\"center\"><b>" + col + "</b></td>")
+                        .collect(Collectors.joining())
+                    + "</tr>"
+                    + IntStream.range(2, rows + 1)
                         .mapToObj(row -> "<tr>"
-                            + IntStream.range(1, cols + 1)
+                            +"<td align=\"center\"><b>" + row + "</b></td>"
+                            + IntStream.range(2, cols + 1)
                                     .mapToObj(col -> "<td align=\"center\">" + row * col + "</td>")
                                     .collect(Collectors.joining())
                             + "</tr>"
                     )
                     .collect(Collectors.joining())
                     + "</table>"
-                    + "</p></div>").getBytes()
+                    + "</p></div><br><p align=\"center\"><a href=\"/\">to main page</a></p>").getBytes()
             );
         }catch (Exception e){
-            out.write(("<h2>It's not a number.</h2>Exception:<br>"+e+"<h2><a href=\"/multi\">go back</a></h2>").getBytes());
+            out.write(("<h3>It's not a number.</h3>Exception:<br>"+e+"<h3><a href=\"/multi\">go back</a></h3>").getBytes());
         }
         out.flush();
         out.close();
